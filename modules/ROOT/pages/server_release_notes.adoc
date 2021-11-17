@@ -82,13 +82,13 @@ TBC
 
 === Restrict Public Link Sharing to Certain Groups
 
-In certain scenarios it is not desired that all users of an ownCloud installation can create public links and share data publicly, respectively. To cover for this, ownCloud Server 10.9 comes with a new configuration option for administrators that allows to restrict the creation of public links to users in certain groups (https://github.com/owncloud/core/pull/38980[#38980]).
+In certain scenarios it is not desired that all users of an ownCloud installation can create public links and share data publicly, respectively. To cover for this, ownCloud Server 10.9 comes with a new configuration option for administrators that allows restricting the creation of public links to users in certain groups (https://github.com/owncloud/core/pull/38980[#38980]).
 
 TIP: Existing public links will continue to work after introducing a restriction policy. The policy only applies to the creation of new public links.
 
 === Ability to move a user's home folder
 
-In some cases it is necessary to manage storage locations of users, e.g., if you want to distribute them across multiple storages. To facilitate this process, Server 10.9 introduces a new _occ_ command (`occ user:move-home`) that allows to move user home folders to a new location (https://github.com/owncloud/core/pull/39136[#39136]). The command takes care of moving the physical data and takes care of updating all other related information.
+In some cases it is necessary to manage storage locations of users, e.g., if you want to distribute them across multiple storages. To facilitate this process, Server 10.9 introduces a new _occ_ command (`occ user:move-home`) that allows moving user home folders to a new location (https://github.com/owncloud/core/pull/39136[#39136]). The command takes care of moving the physical data and takes care of updating all other related information.
 Administrators can find more information in the LINK[ownCloud documentation].
 
 === Updated App Versions
