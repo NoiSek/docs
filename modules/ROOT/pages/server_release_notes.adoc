@@ -102,7 +102,7 @@ Find below a list of updated apps in comparison with the 10.8 complete bundle. M
 === Other Notable Changes
 
 * The handling for inaccessible federated shares has been improved to better avoid removing temporarily unavailable shares. https://github.com/owncloud/core/pull/38474[#38474]
-* Group admins can now add users to their groups via the HTTP Provisioning API (previously this was only possible via the web-based user management). https://github.com/owncloud/core/pull/39013[#39013]
+* Group admins can now add users who are in at least one of their administered groups to their other groups via the HTTP Provisioning API (previously this was only possible via the web-based user management). https://github.com/owncloud/core/pull/39013[#39013]
 * Issues with updating apps via the Market app under certain circumstances have been resolved. https://github.com/owncloud/core/pull/39108[#39108]
 * The logo on the login screen will be displayed correctly again, independent of its size. https://github.com/owncloud/core/pull/39129[#39129]
 * Image orientation information from EXIF data will now be processed correctly so that images will be displayed with the correct orientation, e.g., in the Media Viewer. https://github.com/owncloud/core/pull/39140[#39140]
