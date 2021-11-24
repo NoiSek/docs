@@ -95,9 +95,16 @@ Administrators can find more information in the LINK[ownCloud documentation].
 
 Find below a list of updated apps in comparison with the 10.8 complete bundle. More information on the changes can be found in the respective changelogs on ownCloud Marketplace.
 
-* https://marketplace.owncloud.com/apps/web[Web] 4.x.x
-* Windows Network Drive 2.1.0
-* TBC
+* https://marketplace.owncloud.com/apps/files_mediaviewer[Media Viewer] 1.0.5
+* https://marketplace.owncloud.com/apps/files_pdfviewer[PDF Viewer] 1.0.1
+* https://marketplace.owncloud.com/apps/files_texteditor[Text Editor] 2.4.1
+* https://marketplace.owncloud.com/apps/guests[Guests] 0.9.3
+* https://marketplace.owncloud.com/apps/oauth2[OAuth2] 0.5.2
+* https://marketplace.owncloud.com/apps/openidconnect[OpenID Connect] 2.1.0
+* https://marketplace.owncloud.com/apps/web[Web] 4.5.0
+* https://marketplace.owncloud.com/apps/windows_network_drive[Windows Network Drive] 2.1.0
+* https://marketplace.owncloud.com/apps/wopi[Microsoft Office Online] 1.5.1
+* https://marketplace.owncloud.com/apps/files_primary_s3[S3 Primary Object Storage] 1.1.3
 
 === Other Notable Changes
 
