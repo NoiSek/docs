@@ -54,13 +54,7 @@ NOTE: If you're using the official Docker containers or the Univention appliance
 
 === Support for MariaDB 10.6
 
-Version 10.9 adds support for MariaDB 10.6 (https://github.com/owncloud/core/pull/39286[#39286]). If you're planning a database update to a MariaDB version > 10.5, it is very important to prepare the ownCloud installation first:
-
-1. Update ownCloud Server to version 10.9
-2. Run `occ db:convert-row-format` (this can take some time depending on ???)
-3. Update MariaDB to version 10.6
-
-More information can be found in the [ownCloud documentation]
+Version 10.9 adds support for MariaDB 10.6 (https://github.com/owncloud/core/pull/39286[#39286]). If you're planning a database update to a MariaDB version > 10.5, it is **very important to prepare the ownCloud installation first**. Please read the https://doc.owncloud.com/server/latest/admin_manual/maintenance/upgrading/database_upgrade.html[documentation] on this matter carefully before upgrading to MariaDB 10.6.
 
 === Highly Improved Initial Sync and Discovery Performance
 
