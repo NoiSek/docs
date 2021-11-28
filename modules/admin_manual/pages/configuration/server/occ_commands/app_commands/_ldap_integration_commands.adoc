@@ -5,24 +5,48 @@ Marketplace URL: {oc-marketplace-url}/apps/user_ldap[LDAP Integration]
 [source,console]
 ----
 ldap
- ldap:check-user               Checks whether a user exists on LDAP.
+ ldap:check-user               Checks whether a user exists on LDAP
  ldap:create-empty-config      Creates an empty LDAP configuration
  ldap:delete-config            Deletes an existing LDAP configuration
+ ldap:invalidate-cache         Invalidates the LDAP cache
  ldap:search                   Executes a user or group search
  ldap:set-config               Modifies an LDAP configuration
  ldap:show-config              Shows the LDAP configuration
  ldap:test-config              Tests an LDAP configuration
 ----
 
+== Search for a User
+
 Search for an LDAP user, using this syntax:
 
 [source,console,subs="attributes+"]
 ----
-{occ-command-example-prefix} ldap:search [--group] [--offset="..."] [--limit="..."] search
+{occ-command-example-prefix} ldap:search [options] [--] <search>
 ----
+=== Arguments
 
-Searches match at the beginning of the attribute value only.
-This example searches for `givenNames` that start with 'rob':
+[width="100%",cols="20%,70%",]
+|===
+| `search`
+| The search string operates against the users fullname (`cn`). It is a by default a prefix search.
+| Use the empty string `''` to list all users. Start the string with `*` to change to infix (substring) search.
+|===
+
+=== Options
+
+[width="100%",cols="20%,70%",]
+|===
+| `--group`
+| Searches groups instead of users
+
+| `--offset=OFFSET`
+| The offset of the result set. Needs to be a multiple of limit. defaults to 0. [default: 0]
+
+| `--limit=LIMIT`
+| Limit the results. 0 means no limit, defaults to 15 [default: 15]
+|===
+
+Searches match at the beginning of the attribute value only. This example searches for `givenNames` that contain 'rob':
 
 [source,console,subs="attributes+"]
 ----
@@ -37,39 +61,65 @@ Broaden the search to find, for example, `jeroboam` with the asterisk wildcard:
 {occ-command-example-prefix} ldap:search "*rob"
 ----
 
-User search attributes are set with `ldap:set-config` (below).
-For example, if your search attributes are `givenName` and `sn` you can find users by first name + last name very quickly.
-For example, you’ll find 'Terri Hanson' by searching for `te ha`.
-Trailing whitespace is ignored.
+User search attributes are set with `ldap:set-config` (below). For example, if your search attributes are `givenName` and `sn` you can find users by first name + last name very quickly. For example, you’ll find 'Terri Hanson' by searching for `te ha`. Trailing whitespace is ignored.
 
-Check if an LDAP user exists.
+== Check if an LDAP User Exists
+
 This works only if the ownCloud server is connected to an LDAP server.
+
+[source,console,subs="attributes+"]
+----
+ldap:check-user [options] [--] <ocName>
+----
+
+=== Arguments
+
+[width="100%",cols="20%,70%",]
+|===
+| `ocName`
+| The user name as used in ownCloud (see e.g. the user's Federated Cloud ID).
+|===
+
+=== Options
+
+[width="100%",cols="20%,70%",]
+|===
+| `--force`
+| Ignores disabled LDAP configuration
+|===
+
+Example:
 
 [source,console,subs="attributes+"]
 ----
 {occ-command-example-prefix} ldap:check-user robert
 ----
 
-`ldap:check-user` will not run a check when it finds a disabled LDAP connection.
-This prevents users that exist on disabled LDAP connections from being marked as deleted.
-If you know for sure that the user you are searching for is not in one of the disabled connections, and exists on an active connection, use the `--force` option to force it to check all active LDAP connections.
+`ldap:check-user` will not run a check when it finds a disabled LDAP connection. This prevents users that exist on disabled LDAP connections from being marked as deleted. If you know for sure that the user you are searching for is not in one of the disabled connections and exists on an active connection, use the `--force` option to force a check of all active LDAP connections.
 
 [source,console,subs="attributes+"]
 ----
 {occ-command-example-prefix} ldap:check-user --force robert
 ----
 
-`ldap:create-empty-config` creates an empty LDAP configuration.
-The first one you create has no `configID`, like this example:
+== Create an Empty LDAP Configuration
+
+Create an empty LDAP configuration.
 
 [source,console,subs="attributes+"]
 ----
-{occ-command-example-prefix} ldap:create-empty-config
-  Created new configuration with configID ''
+ldap:create-empty-config [<configID>]
 ----
 
-This is a holdover from the early days, when there was no option to create additional configurations.
-The second, and all subsequent, configurations that you create are automatically assigned IDs.
+=== Arguments
+
+[width="100%",cols="20%,70%",]
+|===
+| `configID`
+| Create a configuration with the specified id
+|===
+
+Configurations that you create without assigning a <configID> are automatically assigned IDs.
 
 [source,console,subs="attributes+"]
 ----
@@ -77,21 +127,57 @@ The second, and all subsequent, configurations that you create are automatically
    Created new configuration with configID 's01'
 ----
 
-Then you can list and view your configurations:
+== List and View Your Configurations
+
+You can list and view your configurations:
 
 [source,console,subs="attributes+"]
 ----
-{occ-command-example-prefix} ldap:show-config
+{occ-command-example-prefix} ldap:show-config [options] [--] [<configID>]
 ----
 
-And view the configuration for a single `configID`:
+=== Arguments
+
+[width="100%",cols="20%,70%",]
+|===
+| `configID`
+| Will show the configuration of the specified id
+|===
+
+=== Options
+
+[width="100%",cols="20%,70%",]
+|===
+| `--show-password`
+| Show LDAP bind password
+
+| `--output[=OUTPUT]`
+| The output format to use (plain, json or json_pretty). [default: "plain"]
+|===
+
+View the configuration for a single `configID`:
 
 [source,console,subs="attributes+"]
 ----
 {occ-command-example-prefix} ldap:show-config s01
 ----
 
-`ldap:delete-config [configID]` deletes an existing LDAP configuration.
+== Delete an Existing LDAP Configuration
+
+Deletes an existing LDAP configuration.
+
+[source,console,subs="attributes+"]
+----
+ ldap:delete-config <configID>
+----
+
+=== Arguments
+
+[width="100%",cols="20%,70%",]
+|===
+| `configID`
+|  The configuration ID
+|===
 
 [source,console,subs="attributes+"]
 ----
@@ -99,83 +185,127 @@ And view the configuration for a single `configID`:
 Deleted configuration with configID 's01'
 ----
 
-The `ldap:set-config` command is for manipulating configurations, like this example that sets search attributes:
+== Invalidate LDAP Cache
+
+This command invalidates the LDAP cache for all users:
 
 [source,console,subs="attributes+"]
 ----
-{occ-command-example-prefix} ldap:set-config s01 ldapAttributesForUserSearch
-"cn;givenname;sn;displayname;mail"
+{occ-command-example-prefix} ldap:invalidate-cache
 ----
 
-The command takes the following format:
+== Manipulate LDAP Configurations
 
+This command manipulates LDAP configurations.
+
+[source,console,subs="attributes+"]
 ----
-ldap:set-config <configID> <configKey> <configValue>
+{occ-command-example-prefix} ldap:set-config <configID> <configKey> <configValue>
 ----
 
-All of the available keys, along with default values for configValue, are listed in the table below.
+=== Arguments
+
+[width="100%",cols="20%,70%",]
+|===
+| `configID`
+|  The configuration ID
+
+| `configKey`
+|  The configuration key
+
+| `configValue`
+|  The new configuration value
+|===
+
+This example sets search attributes:
+
+[source,console,subs="attributes+"]
+----
+{occ-command-example-prefix} ldap:set-config s01 ldapAttributesForUserSearch "cn;givenname;sn;displayname;mail"
+----
+
+Available keys, along with default values for configValue, are listed in the table below.
 
 [width="70%",cols=",",options="header",]
 |===
-| Configuration            | Setting
-| hasMemberOfFilterSupport |
-| hasPagedResultSupport    |
-| homeFolderNamingRule     |
-| lastJpegPhotoLookup      | 0
-| ldapAgentName            | cn=admin,dc=owncloudqa,dc=com
-| ldapAgentPassword        | _*_
-| ldapAttributesForGroupSearch |
-| ldapAttributesForUserSearch  |
-| ldapBackupHost           |
-| ldapBackupPort           |
-| ldapBase                 | dc=owncloudqa,dc=com
-| ldapBaseGroups           | dc=owncloudqa,dc=com
-| ldapBaseUsers            | dc=owncloudqa,dc=com
-| ldapCacheTTL             | 600
-| ldapConfigurationActive  | 1
-| ldapDynamicGroupMemberURL |
-| ldapEmailAttribute       |
-| ldapExperiencedAdmin     | 0
-| ldapExpertUUIDGroupAttr  |
-| ldapExpertUUIDUserAttr   |
-| ldapExpertUsernameAttr   | ldapGroupDisplayName cn
-| ldapGroupFilter          | ldapGroupFilterGroups
-| ldapGroupFilterMode      | 0
-| ldapGroupFilterObjectclass |
-| ldapGroupMemberAssocAttr | uniqueMember
-| ldapHost                 | ldap://host
-| ldapIgnoreNamingRules    |
-| ldapLoginFilter          | (&((objectclass=inetOrgPerson))(uid=%uid))
-| ldapLoginFilterAttributes |
-| ldapLoginFilterEmail     | 0
-| ldapLoginFilterMode      | 0
-| ldapLoginFilterUsername  | 1
-| ldapNestedGroups         | 0
-| ldapOverrideMainServer   |
-| ldapPagingSize           | 500
-| ldapPort                 | 389
-| ldapQuotaAttribute       |
-| ldapQuotaDefault         |
-| ldapTLS                  | 0
-| ldapUserDisplayName      | displayName
-| ldapUserDisplayName2     |
-| ldapUserFilter           | ((objectclass=inetOrgPerson))
-| ldapUserFilterGroups     |
-| ldapUserFilterMode       | 0
-| ldapUserFilterObjectclass | inetOrgPerson
-| ldapUuidGroupAttribute   | auto
-| ldapUuidUserAttribute    | auto
-| turnOffCertCheck         | 0
+| Configuration                 | Setting
+| hasMemberOfFilterSupport      |
+| hasPagedResultSupport         |
+| homeFolderNamingRule          |
+| lastJpegPhotoLookup           | 0
+| ldapAgentName                 | cn=admin,dc=owncloudqa,dc=com
+| ldapAgentPassword             | _*_
+| ldapAttributesForGroupSearch  |
+| ldapAttributesForUserSearch   |
+| ldapBackupHost                |
+| ldapBackupPort                |
+| ldapBase                      | dc=owncloudqa,dc=com
+| ldapBaseGroups                | dc=owncloudqa,dc=com
+| ldapBaseUsers                 | dc=owncloudqa,dc=com
+| ldapCacheTTL                  | 600
+| ldapConfigurationActive       | 1
+| ldapDynamicGroupMemberURL     |
+| ldapEmailAttribute            |
+| ldapExperiencedAdmin          | 0
+| ldapExpertUUIDGroupAttr       |
+| ldapExpertUUIDUserAttr        |
+| ldapExpertUsernameAttr        | ldapGroupDisplayName cn
+| ldapGroupFilter               | ldapGroupFilterGroups
+| ldapGroupFilterMode           | 0
+| ldapGroupFilterObjectclass    |
+| ldapGroupMemberAssocAttr      | uniqueMember
+| ldapHost                      | ldap://host
+| ldapIgnoreNamingRules         |
+| ldapLoginFilter               | (&((objectclass=inetOrgPerson))(uid=%uid))
+| ldapLoginFilterAttributes     |
+| ldapLoginFilterEmail          | 0
+| ldapLoginFilterMode           | 0
+| ldapLoginFilterUsername       | 1
+| ldapNestedGroups              | 0
+| ldapOverrideMainServer        |
+| ldapPagingSize                | 500
+| ldapPort                      | 389
+| ldapQuotaAttribute            |
+| ldapQuotaDefault              |
+| ldapTLS                       | 0
+| ldapUserDisplayName           | displayName
+| ldapUserDisplayName2          |
+| ldapUserFilter                | ((objectclass=inetOrgPerson))
+| ldapUserFilterGroups          |
+| ldapUserFilterMode            | 0
+| ldapUserFilterObjectclass     | inetOrgPerson
+| ldapUuidGroupAttribute        | auto
+| ldapUuidUserAttribute         | auto
+| turnOffCertCheck              | 0
 | useMemberOfToDetectMembership | 1
 |===
 
-`ldap:test-config` tests whether your configuration is correct and can bind to the server.
+== Test Your Configuration
+
+Tests whether your configuration is correct and can bind to the server.
+
+[source,console,subs="attributes+"]
+----
+{occ-command-example-prefix} ldap:test-config <configID>
+----
+
+=== Arguments
+
+[width="100%",cols="20%,70%",]
+|===
+| `configID`
+|  The configuration ID
+|===
+
+Example:
 
 [source,console,subs="attributes+"]
 ----
 {occ-command-example-prefix} ldap:test-config s01
 The configuration is valid and the connection could be established!
 ----
+
+== Set and Unset LDAP App Configurations
 
 [source,console,subs="attributes+"]
 ----
@@ -214,9 +344,9 @@ This functionality is valuable for several reasons; these are:
 * It allows auto-provisioned users with Shibboleth to be moved over to an LDAP server, but be able to continue using ownCloud.
 
 [IMPORTANT]
-==
+====
 This functionality will not work in the following situations:
 
 . No user or group account exists with the supplied username.
 . A user or group account exists, but it uses a different backend.
-==
+====
